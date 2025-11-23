@@ -17,10 +17,13 @@ class ConvNet(nn.Module):
 
         self.flatten = nn.Flatten()
 
-        # После сверток и пулингов размер изображения будет 5x5
-        # Вычисление: (32-5+1)/2 = 14 -> (14-3+1)/2 = 6 -> 6x6
-        # Но с padding=0 по умолчанию: (32-4)/2=14 -> (14-2)/2=6 -> 6x6
-        # 6x6 с 5 каналами = 6*6*5 = 180
+        # Пересчитаем правильную размерность:
+        # Начальный размер: 32x32
+        # После conv1 (5x5, padding=0, stride=1): 32-5+1 = 28x28
+        # После pool1 (2x2): 28/2 = 14x14
+        # После conv2 (3x3, padding=0, stride=1): 14-3+1 = 12x12  
+        # После pool2 (2x2): 12/2 = 6x6
+        # Итого: 6x6 с 5 каналами = 6*6*5 = 180
         self.fc1 = nn.Linear(5 * 6 * 6, 100)
         self.fc2 = nn.Linear(100, 10)
 
@@ -46,6 +49,5 @@ class ConvNet(nn.Module):
         x = self.fc2(x)
         
         return x
-        
 def create_model():
     return ConvNet()
